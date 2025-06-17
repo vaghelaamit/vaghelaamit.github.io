@@ -1,125 +1,166 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Amit Vaghela Portfolio',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.dark(primary: Colors.blueAccent),
+        scaffoldBackgroundColor: Colors.black,
+        fontFamily: 'Roboto',
+        cardColor: Colors.grey[900],
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: PortfolioPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class PortfolioPage extends StatelessWidget {
+  final Uri _linkedin = Uri.parse('https://www.linkedin.com/in/amit-vaghela-01011991');
+  final Uri _stackoverflow = Uri.parse('https://stackoverflow.com/users/2826147/amit-vaghela');
+  final Uri _email = Uri.parse('mailto:vaghela.aamit@gmail.com');
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+  Future<void> _launchUrl(Uri url) async {
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  Widget _sectionCard(String title, List<Widget> children) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueAccent)),
+            SizedBox(height: 10),
+            ...children,
+          ],
+        ),
+      ),
+    );
+  }
 
-  final String title;
+  Widget _infoText(String content) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text(content, style: TextStyle(fontSize: 14, height: 1.4)),
+    );
+  }
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  Widget _projectLink(String name, String url) {
+    return GestureDetector(
+      onTap: () => _launchUrl(Uri.parse(url)),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 6.0),
+        child: Text(
+          name,
+          style: TextStyle(
+              color: Colors.blueAccent, decoration: TextDecoration.underline),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text('Amit Vaghela'),
+        centerTitle: true,
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.grey,
+                    child: Icon(Icons.person, size: 50, color: Colors.white),
+                  ),
+                  SizedBox(height: 12),
+                  Text('Lead Software Engineer',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                ],
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+
+            _sectionCard('About Me', [
+              _infoText(
+                  '11+ years of experience in mobile app development (Android, iOS, Flutter). Skilled in building scalable, testable, and high-performance applications.'),
+            ]),
+
+            _sectionCard('Work Experience', [
+              _infoText(
+                  'Freelance Mobile App Developer (2019–Present)\n• Full lifecycle development\n• Team collaboration\n• Architecture & testing'),
+              _infoText(
+                  'EasyPay Pvt Ltd (2017–2019)\n• Architecture and design\n• Debugging and lifecycle management'),
+              _infoText(
+                  'Value Chain Solutions (2015–2017)\n• Project planning\n• SOPs and lifecycle handling'),
+              _infoText(
+                  'smartSense Solutions (2014–2015)\n• Client requirements\n• Development and documentation'),
+              _infoText(
+                  'Agite Technologies (2013–2014)\n• Bug fixing\n• Feature implementation and testing'),
+            ]),
+
+            _sectionCard('Skills', [
+              _infoText(
+                  'Flutter, Android, Kotlin, iOS, Core Java, Git, Firebase, Web Services, Agile Methodology'),
+            ]),
+
+            _sectionCard('Projects', [
+              _projectLink('MaxPlay',
+                  'https://play.google.com/store/apps/details?id=com.maxplay.design'),
+              _projectLink('Paisa Nikal',
+                  'https://play.google.com/store/apps/details?id=aepsapp.paisanikal.com.aepsandroid&hl=en_US'),
+              _infoText('Other Projects: Fast App, E-commerce App, MyStore TV, Remote App, Wow App'),
+            ]),
+
+            _sectionCard('Education', [
+              _infoText('B.Tech - Gujarat Technological University (2008–2012)'),
+            ]),
+
+            _sectionCard('Languages', [
+              _infoText('English (Professional), Hindi (Native)'),
+            ]),
+
+            _sectionCard('Contact', [
+              _infoText('Email: vaghela.aamit@gmail.com'),
+              _infoText('Phone: 9510039456'),
+              Wrap(
+                spacing: 10,
+                children: [
+                  OutlinedButton(
+                      onPressed: () => _launchUrl(_linkedin),
+                      child: Text('LinkedIn')),
+                  OutlinedButton(
+                      onPressed: () => _launchUrl(_stackoverflow),
+                      child: Text('StackOverflow')),
+                  OutlinedButton(
+                      onPressed: () => _launchUrl(_email),
+                      child: Text('Email Me')),
+                ],
+              )
+            ]),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
