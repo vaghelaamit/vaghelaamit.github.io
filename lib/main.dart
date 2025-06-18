@@ -1,36 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:website_porfolio/WorkExperience.dart';
 
 void main() {
-  runApp(MyPortfolioApp());
+  runApp(MyApp());
 }
 
-class MyPortfolioApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Amit Vaghela',
+      title: 'Amit Vaghela Portfolio',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
-        primaryColor: Colors.blueAccent,
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.dark(primary: Colors.blueAccent),
         scaffoldBackgroundColor: Colors.black,
-        textTheme: TextTheme(
-          headlineMedium: TextStyle(
-            fontSize: 32,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          headlineLarge: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.blueAccent,
-          ),
-          bodyMedium: TextStyle(
-            fontSize: 15,
-            color: Colors.white70,
-            height: 1.6,
-          ),
-        ),
+        fontFamily: 'Roboto',
+        cardColor: Colors.grey[900],
       ),
       home: PortfolioPage(),
     );
@@ -39,63 +27,57 @@ class MyPortfolioApp extends StatelessWidget {
 
 class PortfolioPage extends StatelessWidget {
   final Uri _linkedin =
-      Uri.parse('https://linkedin.com/in/amit-vaghela-01011991');
+      Uri.parse('https://www.linkedin.com/in/amit-vaghela-01011991');
   final Uri _stackoverflow =
       Uri.parse('https://stackoverflow.com/users/2826147/amit-vaghela');
   final Uri _email = Uri.parse('mailto:vaghela.aamit@gmail.com');
 
-  void _launch(Uri url) async {
+  Future<void> _launchUrl(Uri url) async {
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 
-  Widget section(BuildContext context, String title, List<Widget> content) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(title,
-              style: Theme.of(context).textTheme.headlineLarge,
-              textAlign: TextAlign.center),
-          SizedBox(height: 12),
-          ...content,
-        ],
+  Widget _sectionCard(String title, List<Widget> children) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title,
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueAccent)),
+            SizedBox(height: 10),
+            ...children,
+          ],
+        ),
       ),
     );
   }
 
-  Widget linkCard(String name, String url) => Card(
-        color: Colors.grey[850],
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 2,
-        margin: EdgeInsets.symmetric(vertical: 6),
-        child: ListTile(
-          title: Text(name, style: TextStyle(color: Colors.blueAccent)),
-          trailing: Icon(Icons.open_in_new, color: Colors.blueAccent),
-          onTap: () => _launch(Uri.parse(url)),
-        ),
-      );
-
-  Widget _contactInfo(IconData icon, String text) {
-    return Chip(
-      backgroundColor: Colors.grey.shade900,
-      avatar: Icon(icon, size: 18, color: Colors.blueAccent),
-      label: Text(text, style: TextStyle(color: Colors.white)),
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+  Widget _infoText(String content) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Text(content, style: TextStyle(fontSize: 14, height: 1.4)),
     );
   }
 
-  Widget _linkButton(
-      {required IconData icon, required String label, required String url}) {
-    return InkWell(
-      onTap: () => _launch(Uri.parse(url)),
-      child: Chip(
-        backgroundColor: Colors.grey.shade800,
-        avatar: Icon(icon, size: 18, color: Colors.lightBlueAccent),
-        label: Text(label, style: TextStyle(color: Colors.white)),
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+  Widget _projectLink(String name, String url) {
+    return GestureDetector(
+      onTap: () => _launchUrl(Uri.parse(url)),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 6.0),
+        child: Text(
+          name,
+          style: TextStyle(
+              color: Colors.blueAccent, decoration: TextDecoration.underline),
+        ),
       ),
     );
   }
@@ -103,313 +85,218 @@ class PortfolioPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Amit Vaghela'), centerTitle: true),
+      appBar: AppBar(
+        title: Text('Amit Vaghela'),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 800),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      'Lead Software Engineer',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 8),
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      spacing: 12,
-                      runSpacing: 8,
-                      children: [
-                        _contactInfo(Icons.email, 'vaghela.aamit@gmail.com'),
-                        _contactInfo(Icons.phone, '+91 95100 39456'),
-                        _linkButton(
-                            icon: Icons.link,
-                            label: 'LinkedIn',
-                            url: _linkedin.toString()),
-                        _linkButton(
-                            icon: Icons.code,
-                            label: 'StackOverflow',
-                            url: _stackoverflow.toString()),
-                      ],
-                    ),
-                    InkWell(
-                      onTap: () => _launch(
-                          Uri.parse('https://example.com/amit_resume.pdf')),
-                      child: Chip(
-                        backgroundColor: Colors.grey.shade800,
-                        avatar: Icon(Icons.download,
-                            size: 18, color: Colors.lightBlueAccent),
-                        label: Text('Download Resume',
-                            style: TextStyle(color: Colors.white)),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      ),
-                    ),
-                  ],
-                ),
-                section(context, 'About Me', [
-                  Text(
-                    '12+ years of experience in mobile app development (Flutter, Android, iOS). Skilled in building scalable, testable, and high-performance applications.',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.grey,
+                    child: Icon(Icons.person, size: 50, color: Colors.white),
                   ),
-                ]),
-                AnimatedSection(
-                  child: section(context, 'Work Experience', [
-                    _experienceItem(
-                      context,
-                      title: 'Freelance Mobile App Developer',
-                      company: 'Self-employed',
-                      duration: '2019 – Present',
-                      bullets: [
-                        'Full lifecycle app development',
-                        'Team collaboration and code reviews',
-                        'Architecting scalable and testable solutions',
-                      ],
-                    ),
-                    _experienceItem(
-                      context,
-                      title: 'Senior Android Developer',
-                      company: 'EasyPay Pvt Ltd',
-                      duration: '2017 – 2019',
-                      bullets: [
-                        'Designed scalable mobile architecture',
-                        'Managed release cycles and debugging',
-                      ],
-                    ),
-                    _experienceItem(
-                      context,
-                      title: 'Android Developer',
-                      company: 'Value Chain Solutions',
-                      duration: '2015 – 2017',
-                      bullets: [
-                        'Handled project planning and implementation',
-                        'Defined SOPs and lifecycle strategies',
-                      ],
-                    ),
-                    _experienceItem(
-                      context,
-                      title: 'Junior Developer',
-                      company: 'smartSense Solutions',
-                      duration: '2014 – 2015',
-                      bullets: [
-                        'Worked with clients on app requirements',
-                        'Development, testing, and documentation',
-                      ],
-                    ),
-                    _experienceItem(
-                      context,
-                      title: 'Android Developer Intern',
-                      company: 'Agite Technologies',
-                      duration: '2013 – 2014',
-                      bullets: [
-                        'Fixed bugs and added features',
-                        'Tested and deployed Android apps',
-                      ],
-                    ),
-                  ]),
-                ),
-                AnimatedSection(
-                  child: section(context, 'Skills', [
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        _skillChip('Flutter'),
-                        _skillChip('Android'),
-                        _skillChip('iOS'),
-                        _skillChip('Kotlin'),
-                        _skillChip('Java'),
-                        _skillChip('Git'),
-                        _skillChip('Firebase'),
-                        _skillChip('REST APIs'),
-                        _skillChip('Agile'),
-                      ],
-                    ),
-                  ]),
-                ),
-                section(context, 'Projects', [
-                  linkCard('MaxPlay', 'https://play.google.com/...'),
-                  linkCard('Paisa Nikal', 'https://play.google.com/...'),
-                  Text('Fast App',
-                      style: Theme.of(context).textTheme.bodyMedium),
-                  Text('TV App', style: Theme.of(context).textTheme.bodyMedium),
-                  Text('Wow App',
-                      style: Theme.of(context).textTheme.bodyMedium),
-                ]),
-                section(context, 'Education', [
-                  Text('B.Tech – Gujarat Technological University (2008–2012)',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center),
-                  Text('Higher Secondary School Certificate (2007-2008)',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center),
-                  Text('Secondary School Certificate (2005–2006)',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center),
-                ]),
-                section(context, 'Languages', [
-                  _languageRating('English', 4),
-                  _languageRating('Hindi', 4),
-                  _languageRating('Gujarati', 5),
-                ]),
-              ],
+                  SizedBox(height: 12),
+                  Text('Lead Software Engineer',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+                ],
+              ),
             ),
-          ),
+            _sectionCard('Contact', [
+              _infoText('Email: vaghela.aamit@gmail.com'),
+              _infoText('Phone: 9510039456'),
+              Wrap(
+                spacing: 10,
+                children: [
+                  OutlinedButton(
+                      onPressed: () => _launchUrl(_linkedin),
+                      child: Text('LinkedIn')),
+                  OutlinedButton(
+                      onPressed: () => _launchUrl(_stackoverflow),
+                      child: Text('StackOverflow')),
+                  OutlinedButton(
+                      onPressed: () => _launchUrl(_email),
+                      child: Text('Email Me')),
+                ],
+              )
+            ]),
+            _sectionCard('About Me', [
+              _infoText(
+                  '11+ years of experience in mobile app development (Android, iOS, Flutter). Skilled in building scalable, testable, and high-performance applications.'),
+            ]),
+            _sectionCard('Work Experience', [
+              AnimationLimiter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: List.generate(
+                    workExperiences.length,
+                    (int index) {
+                      final exp = workExperiences[index];
+                      return AnimationConfiguration.staggeredList(
+                        position: index,
+                        duration: const Duration(milliseconds: 500),
+                        child: SlideAnimation(
+                          verticalOffset: 50.0,
+                          child: FadeInAnimation(
+                            child: Card(
+                              margin: const EdgeInsets.symmetric(vertical: 8),
+                              color: Colors.grey[850],
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(exp.title,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blueAccent)),
+                                    SizedBox(height: 4),
+                                    Text(exp.duration,
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            color: Colors.grey[400],
+                                            fontStyle: FontStyle.italic)),
+                                    SizedBox(height: 8),
+                                    ...exp.points.map((p) => Row(
+                                          children: [
+                                            Icon(Icons.arrow_right,
+                                                color: Colors.blueAccent,
+                                                size: 18),
+                                            Expanded(
+                                                child: Text(p,
+                                                    style: TextStyle(
+                                                        fontSize: 14))),
+                                          ],
+                                        )),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              )
+            ]),
+            _sectionCard('Skills', [
+              _infoText(
+                  'Flutter, Android, Kotlin, iOS, Core Java, Git, Firebase, Web Services, Agile Methodology'),
+            ]),
+            _sectionCard('Projects', [
+              _projectLink('MaxPlay',
+                  'https://play.google.com/store/apps/details?id=com.maxplay.design'),
+              _projectLink('Paisa Nikal',
+                  'https://play.google.com/store/apps/details?id=aepsapp.paisanikal.com.aepsandroid&hl=en_US'),
+              _infoText('Fast App'),
+              _infoText('Kiosk Android App'),
+              _infoText('MyStore TV'),
+              _infoText('Remote App'),
+              _infoText('Wow App'),
+            ]),
+            _sectionCard('Education', [
+              _infoText(
+                  'B.Tech - Gujarat Technological University (2008–2012)'),
+            ]),
+            _sectionCard('Languages', [
+              ...languages.map((lang) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Row(
+                      children: [
+                        Expanded(
+                            flex: 2,
+                            child: Text(lang.name,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500))),
+                        Expanded(
+                          flex: 3,
+                          child: Row(
+                            children: List.generate(5, (index) {
+                              return Icon(
+                                index < lang.rating
+                                    ? Icons.star
+                                    : Icons.star_border_outlined,
+                                color: Colors.amber,
+                                size: 18,
+                              );
+                            }),
+                          ),
+                        )
+                      ],
+                    ),
+                  )),
+            ])
+          ],
         ),
       ),
     );
   }
-}
 
-Widget _skillChip(String label) {
-  return Chip(
-    label: Text(label, style: TextStyle(color: Colors.white)),
-    backgroundColor: Colors.blueGrey.shade800,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-  );
-}
+  final languages = [
+    Language(name: 'English', rating: 4),
+    Language(name: 'Hindi', rating: 4),
+    Language(name: 'Gujarati', rating: 5),
+  ];
 
-Widget _experienceItem(BuildContext context,
-    {required String title,
-    required String company,
-    required String duration,
-    required List<String> bullets}) {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 20),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 2,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(fontWeight: FontWeight.bold)),
-              Text(company,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.grey)),
-              Text(duration,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.grey)),
-            ],
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          flex: 4,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: bullets
-                .map((b) => Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text("• ",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white)),
-                          Expanded(
-                              child: Text(b,
-                                  style:
-                                      Theme.of(context).textTheme.bodyMedium)),
-                        ],
-                      ),
-                    ))
-                .toList(),
-          ),
-        ),
+  final workExperiences = [
+    WorkExperience(
+      title: 'Freelance Mobile App Developer',
+      duration: '2019–Present',
+      points: [
+        'Full lifecycle development',
+        'Team collaboration',
+        'Architecture & testing'
       ],
     ),
-  );
-}
-
-class AnimatedSection extends StatefulWidget {
-  final Widget child;
-
-  const AnimatedSection({required this.child});
-
-  @override
-  _AnimatedSectionState createState() => _AnimatedSectionState();
-}
-
-class _AnimatedSectionState extends State<AnimatedSection>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _slideAnimation;
-  late Animation<double> _fadeAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 600));
-    _slideAnimation = Tween<Offset>(begin: Offset(0, 0.1), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeIn,
-    ));
-
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SlideTransition(
-      position: _slideAnimation,
-      child: FadeTransition(
-        opacity: _fadeAnimation,
-        child: widget.child,
-      ),
-    );
-  }
-}
-
-Widget _languageRating(String language, int rating) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6.0),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          language,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-        ),
-        const SizedBox(width: 12),
-        Row(
-          children: List.generate(5, (index) {
-            return Icon(
-              index < rating ? Icons.star : Icons.star_border,
-              color: Colors.amber,
-              size: 20,
-            );
-          }),
-        ),
+    WorkExperience(
+      title: 'EasyPay Pvt Ltd',
+      duration: '2017–2019',
+      points: [
+        'Architecture and design',
+        'Debugging and lifecycle management',
       ],
     ),
-  );
+    WorkExperience(
+      title: 'Value Chain Solutions',
+      duration: '2015–2017',
+      points: [
+        'Project planning',
+        'SOPs and lifecycle handling',
+      ],
+    ),
+    WorkExperience(
+      title: 'smartSense Solutions',
+      duration: '2014–2015',
+      points: [
+        'Client requirements',
+        'Development and documentation',
+      ],
+    ),
+    WorkExperience(
+      title: 'Agite Technologies',
+      duration: '2013–2014',
+      points: [
+        'Bug fixing',
+        'Feature implementation and testing',
+      ],
+    ),
+  ];
+}
+
+class Language {
+  final String name;
+  final int rating; // out of 5
+
+  Language({required this.name, required this.rating});
 }
