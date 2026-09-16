@@ -194,7 +194,7 @@ class PortfolioHomePage extends StatelessWidget {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 24),
-              margin: const EdgeInsets.top(40),
+              margin: const EdgeInsets.only(top: 40),
               decoration: const BoxDecoration(
                 border: Border(top: BorderSide(color: Color(0x14FFFFFF))),
                 color: Color(0xFF0B1120),
