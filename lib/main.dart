@@ -427,8 +427,8 @@ class PortfolioData {
 
   static final List<WorkExperience> workExperiences = [
     WorkExperience(
-      company: 'Freelance Designations',
-      position: 'Freelance Mobile App Developer',
+      company: 'Brodos India Pvt Ltd',
+      position: 'Lead Engineer',
       period: '07/2019 - Present',
       responsibilities: [
         'Developing features from scratch to deployment on app ecosystems.',
